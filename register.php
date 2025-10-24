@@ -16,7 +16,6 @@ if(mysqli_connect_errno()) {
 }
 
 // Process form submission
-$registration_success = false;
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -28,7 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dob = mysqli_real_escape_string($con, $_POST['dob']);
     $gender = mysqli_real_escape_string($con, $_POST['gender']);
     $maritalStatus = mysqli_real_escape_string($con, $_POST['maritalStatus']);
-    $nationality = mysqli_real_escape_string($con, $_POST['nationality']);
     $address = mysqli_real_escape_string($con, trim($_POST['address']));
     $phone = mysqli_real_escape_string($con, trim($_POST['phone']));
     $email = mysqli_real_escape_string($con, trim($_POST['email']));
@@ -37,19 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bloodGroup = mysqli_real_escape_string($con, $_POST['bloodGroup']);
     $allergies = mysqli_real_escape_string($con, trim($_POST['allergies']));
     $currentMeds = mysqli_real_escape_string($con, trim($_POST['currentMeds']));
-    $hasInsurance = mysqli_real_escape_string($con, $_POST['hasInsurance']);
-    $insuranceProvider = mysqli_real_escape_string($con, trim($_POST['insuranceProvider']));
-    $policyNumber = mysqli_real_escape_string($con, trim($_POST['policyNumber']));
-    $groupNumber = mysqli_real_escape_string($con, trim($_POST['groupNumber']));
-    $insurancePhone = mysqli_real_escape_string($con, trim($_POST['insurancePhone']));
     $emergencyName1 = mysqli_real_escape_string($con, trim($_POST['emergencyName1']));
     $emergencyRelation1 = mysqli_real_escape_string($con, $_POST['emergencyRelation1']);
     $emergencyPhone1 = mysqli_real_escape_string($con, trim($_POST['emergencyPhone1']));
-    $emergencyEmail1 = mysqli_real_escape_string($con, trim($_POST['emergencyEmail1']));
-    $emergencyName2 = mysqli_real_escape_string($con, trim($_POST['emergencyName2']));
-    $emergencyRelation2 = mysqli_real_escape_string($con, $_POST['emergencyRelation2']);
-    $emergencyPhone2 = mysqli_real_escape_string($con, trim($_POST['emergencyPhone2']));
-    $emergencyEmail2 = mysqli_real_escape_string($con, trim($_POST['emergencyEmail2']));
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     
     // Basic validation
@@ -74,18 +62,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Insert into patients table
             $query = "INSERT INTO patients (
                 first_name, middle_name, last_name, aadhaar, dob, gender, marital_status, 
-                nationality, address, phone, email, weight, height, blood_group, allergies, 
-                current_medications, has_insurance, insurance_provider, policy_number, 
-                group_number, insurance_phone, emergency_name1, emergency_relation1, 
-                emergency_phone1, emergency_email1, emergency_name2, emergency_relation2, 
-                emergency_phone2, emergency_email2, password
+                address, phone, email, weight, height, blood_group, allergies, 
+                current_medications, emergency_name1, emergency_relation1, 
+                emergency_phone1, password
             ) VALUES (
                 '$firstName', '$middleName', '$lastName', '$aadhaar', '$dob', '$gender', 
-                '$maritalStatus', '$nationality', '$address', '$phone', '$email', '$weight', 
-                '$height', '$bloodGroup', '$allergies', '$currentMeds', '$hasInsurance', 
-                '$insuranceProvider', '$policyNumber', '$groupNumber', '$insurancePhone', 
-                '$emergencyName1', '$emergencyRelation1', '$emergencyPhone1', '$emergencyEmail1', 
-                '$emergencyName2', '$emergencyRelation2', '$emergencyPhone2', '$emergencyEmail2', 
+                '$maritalStatus', '$address', '$phone', '$email', '$weight', 
+                '$height', '$bloodGroup', '$allergies', '$currentMeds', 
+                '$emergencyName1', '$emergencyRelation1', '$emergencyPhone1', 
                 '$password'
             )";
             
@@ -109,7 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -223,6 +206,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: var(--gray-dark);
+        }
+        
+        .required::after {
+            content: " *";
+            color: var(--error);
         }
         
         .form-control {
@@ -348,8 +336,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <div class="registration-card">
             <div class="card-header">
-                <h1>Create Your MediConnect Account</h1>
-                <p>Secure your health records in one place</p>
+                <h1>Patient Registration</h1>
+                <p>Create your personal health record account</p>
             </div>
             
             <div class="card-body">
@@ -366,7 +354,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="firstName">First Name*</label>
+                                <label for="firstName" class="required">First Name</label>
                                 <input type="text" id="firstName" name="firstName" class="form-control" value="<?php echo isset($_POST['firstName']) ? htmlspecialchars($_POST['firstName']) : ''; ?>" required>
                             </div>
                             
@@ -376,24 +364,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                             
                             <div class="form-group">
-                                <label for="lastName">Last Name*</label>
+                                <label for="lastName" class="required">Last Name</label>
                                 <input type="text" id="lastName" name="lastName" class="form-control" value="<?php echo isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : ''; ?>" required>
                             </div>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="aadhaar">Aadhaar Number*</label>
+                                <label for="aadhaar" class="required">Aadhaar Number</label>
                                 <input type="text" id="aadhaar" name="aadhaar" class="form-control" pattern="\d{12}" placeholder="Enter 12 digits" value="<?php echo isset($_POST['aadhaar']) ? htmlspecialchars($_POST['aadhaar']) : ''; ?>" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="dob">Date of Birth*</label>
+                                <label for="dob" class="required">Date of Birth</label>
                                 <input type="date" id="dob" name="dob" class="form-control" value="<?php echo isset($_POST['dob']) ? htmlspecialchars($_POST['dob']) : ''; ?>" required>
                             </div>
                             
                             <div class="form-group">
-                                <label>Gender*</label>
+                                <label class="required">Gender</label>
                                 <div class="radio-group">
                                     <label class="radio-option">
                                         <input type="radio" name="gender" value="male" <?php echo (isset($_POST['gender']) && $_POST['gender'] == 'male') ? 'checked' : ''; ?> required> Male
@@ -408,22 +396,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
                         
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="maritalStatus">Marital Status</label>
-                                <select id="maritalStatus" name="maritalStatus" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="single" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'single') ? 'selected' : ''; ?>>Single</option>
-                                    <option value="married" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'married') ? 'selected' : ''; ?>>Married</option>
-                                    <option value="divorced" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'divorced') ? 'selected' : ''; ?>>Divorced</option>
-                                    <option value="widowed" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'widowed') ? 'selected' : ''; ?>>Widowed</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="nationality">Nationality</label>
-                                <input type="text" id="nationality" name="nationality" class="form-control" value="Indian" readonly>
-                            </div>
+                        <div class="form-group">
+                            <label for="maritalStatus">Marital Status</label>
+                            <select id="maritalStatus" name="maritalStatus" class="form-control">
+                                <option value="">Select</option>
+                                <option value="single" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'single') ? 'selected' : ''; ?>>Single</option>
+                                <option value="married" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'married') ? 'selected' : ''; ?>>Married</option>
+                                <option value="divorced" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'divorced') ? 'selected' : ''; ?>>Divorced</option>
+                                <option value="widowed" <?php echo (isset($_POST['maritalStatus']) && $_POST['maritalStatus'] == 'widowed') ? 'selected' : ''; ?>>Widowed</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -432,18 +413,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <h2 class="section-title">Contact Information</h2>
                         
                         <div class="form-group">
-                            <label for="address">Complete Address*</label>
+                            <label for="address" class="required">Complete Address</label>
                             <textarea id="address" name="address" class="form-control" required><?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?></textarea>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="phone">Contact Number*</label>
+                                <label for="phone" class="required">Contact Number</label>
                                 <input type="tel" id="phone" name="phone" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="email">Email Address*</label>
+                                <label for="email" class="required">Email Address</label>
                                 <input type="email" id="email" name="email" class="form-control" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
                             </div>
                         </div>
@@ -489,44 +470,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="currentMeds">Current Medications</label>
                             <input type="text" id="currentMeds" name="currentMeds" class="form-control" placeholder="Separate with commas" value="<?php echo isset($_POST['currentMeds']) ? htmlspecialchars($_POST['currentMeds']) : ''; ?>">
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Do you have health insurance?*</label>
-                            <div class="radio-group">
-                                <label class="radio-option">
-                                    <input type="radio" name="hasInsurance" value="yes" <?php echo (isset($_POST['hasInsurance']) && $_POST['hasInsurance'] == 'yes') ? 'checked' : ''; ?>> Yes
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="hasInsurance" value="no" <?php echo (!isset($_POST['hasInsurance']) || $_POST['hasInsurance'] == 'no') ? 'checked' : ''; ?>> No
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="insurance-details" id="insuranceDetails" style="display: none;">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="insuranceProvider">Insurance Provider</label>
-                                    <input type="text" id="insuranceProvider" name="insuranceProvider" class="form-control" value="<?php echo isset($_POST['insuranceProvider']) ? htmlspecialchars($_POST['insuranceProvider']) : ''; ?>">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="policyNumber">Policy Number</label>
-                                    <input type="text" id="policyNumber" name="policyNumber" class="form-control" value="<?php echo isset($_POST['policyNumber']) ? htmlspecialchars($_POST['policyNumber']) : ''; ?>">
-                                </div>
-                            </div>
-                            
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="groupNumber">Group Number</label>
-                                    <input type="text" id="groupNumber" name="groupNumber" class="form-control" value="<?php echo isset($_POST['groupNumber']) ? htmlspecialchars($_POST['groupNumber']) : ''; ?>">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="insurancePhone">Insurance Phone</label>
-                                    <input type="tel" id="insurancePhone" name="insurancePhone" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['insurancePhone']) ? htmlspecialchars($_POST['insurancePhone']) : ''; ?>">
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- Emergency Contacts Section -->
@@ -534,16 +477,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <h2 class="section-title">Emergency Contacts</h2>
                         
                         <div class="emergency-contact-card">
-                            <h3 class="contact-title">Primary Emergency Contact*</h3>
+                            <h3 class="contact-title">Primary Emergency Contact</h3>
                             
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label for="emergencyName1">Full Name*</label>
+                                    <label for="emergencyName1" class="required">Full Name</label>
                                     <input type="text" id="emergencyName1" name="emergencyName1" class="form-control" value="<?php echo isset($_POST['emergencyName1']) ? htmlspecialchars($_POST['emergencyName1']) : ''; ?>" required>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="emergencyRelation1">Relationship*</label>
+                                    <label for="emergencyRelation1" class="required">Relationship</label>
                                     <select id="emergencyRelation1" name="emergencyRelation1" class="form-control" required>
                                         <option value="">Select</option>
                                         <option value="spouse" <?php echo (isset($_POST['emergencyRelation1']) && $_POST['emergencyRelation1'] == 'spouse') ? 'selected' : ''; ?>>Spouse</option>
@@ -556,52 +499,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
                             
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="emergencyPhone1">Phone Number*</label>
-                                    <input type="tel" id="emergencyPhone1" name="emergencyPhone1" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['emergencyPhone1']) ? htmlspecialchars($_POST['emergencyPhone1']) : ''; ?>" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="emergencyEmail1">Email</label>
-                                    <input type="email" id="emergencyEmail1" name="emergencyEmail1" class="form-control" value="<?php echo isset($_POST['emergencyEmail1']) ? htmlspecialchars($_POST['emergencyEmail1']) : ''; ?>">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="emergency-contact-card">
-                            <h3 class="contact-title">Secondary Emergency Contact</h3>
-                            
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="emergencyName2">Full Name</label>
-                                    <input type="text" id="emergencyName2" name="emergencyName2" class="form-control" value="<?php echo isset($_POST['emergencyName2']) ? htmlspecialchars($_POST['emergencyName2']) : ''; ?>">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="emergencyRelation2">Relationship</label>
-                                    <select id="emergencyRelation2" name="emergencyRelation2" class="form-control">
-                                        <option value="">Select</option>
-                                        <option value="spouse" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'spouse') ? 'selected' : ''; ?>>Spouse</option>
-                                        <option value="parent" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'parent') ? 'selected' : ''; ?>>Parent</option>
-                                        <option value="child" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'child') ? 'selected' : ''; ?>>Child</option>
-                                        <option value="sibling" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'sibling') ? 'selected' : ''; ?>>Sibling</option>
-                                        <option value="friend" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'friend') ? 'selected' : ''; ?>>Friend</option>
-                                        <option value="other" <?php echo (isset($_POST['emergencyRelation2']) && $_POST['emergencyRelation2'] == 'other') ? 'selected' : ''; ?>>Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="emergencyPhone2">Phone Number</label>
-                                    <input type="tel" id="emergencyPhone2" name="emergencyPhone2" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['emergencyPhone2']) ? htmlspecialchars($_POST['emergencyPhone2']) : ''; ?>">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="emergencyEmail2">Email</label>
-                                    <input type="email" id="emergencyEmail2" name="emergencyEmail2" class="form-control" value="<?php echo isset($_POST['emergencyEmail2']) ? htmlspecialchars($_POST['emergencyEmail2']) : ''; ?>">
-                                </div>
+                            <div class="form-group">
+                                <label for="emergencyPhone1" class="required">Phone Number</label>
+                                <input type="tel" id="emergencyPhone1" name="emergencyPhone1" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['emergencyPhone1']) ? htmlspecialchars($_POST['emergencyPhone1']) : ''; ?>" required>
                             </div>
                         </div>
                     </div>
@@ -612,24 +512,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="password">Create Password*</label>
+                                <label for="password" class="required">Create Password</label>
                                 <input type="password" id="password" name="password" class="form-control" required>
                                 <small class="text-muted">Minimum 8 characters with 1 uppercase, 1 lowercase, and 1 number</small>
                             </div>
                             
                             <div class="form-group">
-                                <label for="confirmPassword">Confirm Password*</label>
+                                <label for="confirmPassword" class="required">Confirm Password</label>
                                 <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <button type="submit" class="btn btn-block">Create Account</button>
+                        <button type="submit" class="btn btn-block">Create Patient Account</button>
                     </div>
                     
                     <div class="login-link">
                         <p>Already have an account? <a href="login.php">Login here</a></p>
+                        <p>Are you a doctor? <a href="doctor_register.php">Register as Doctor</a></p>
                     </div>
                 </form>
             </div>
@@ -637,28 +538,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        // DOM Elements
-        const form = document.getElementById('registrationForm');
-        const insuranceRadios = document.querySelectorAll('input[name="hasInsurance"]');
-        const insuranceDetails = document.getElementById('insuranceDetails');
-        
-        // Show/hide insurance details based on selection
-        insuranceRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                insuranceDetails.style.display = this.value === 'yes' ? 'block' : 'none';
-            });
-        });
-        
-        // Initialize insurance details visibility on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectedInsurance = document.querySelector('input[name="hasInsurance"]:checked');
-            if (selectedInsurance && selectedInsurance.value === 'yes') {
-                insuranceDetails.style.display = 'block';
-            }
-        });
-        
         // Password validation
-        form.addEventListener('submit', function(e) {
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
