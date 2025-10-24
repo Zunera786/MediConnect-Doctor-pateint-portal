@@ -16,7 +16,6 @@ if(mysqli_connect_errno()) {
 }
 
 // Process form submission
-$registration_success = false;
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -80,7 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,6 +194,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: var(--gray-dark);
         }
         
+        .required::after {
+            content: " *";
+            color: var(--error);
+        }
+        
         .form-control {
             width: 100%;
             padding: 0.75rem;
@@ -301,24 +304,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="firstName">First Name*</label>
+                                <label for="firstName" class="required">First Name</label>
                                 <input type="text" id="firstName" name="firstName" class="form-control" value="<?php echo isset($_POST['firstName']) ? htmlspecialchars($_POST['firstName']) : ''; ?>" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="lastName">Last Name*</label>
+                                <label for="lastName" class="required">Last Name</label>
                                 <input type="text" id="lastName" name="lastName" class="form-control" value="<?php echo isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : ''; ?>" required>
                             </div>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="email">Email Address*</label>
+                                <label for="email" class="required">Email Address</label>
                                 <input type="email" id="email" name="email" class="form-control" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="phone">Phone Number*</label>
+                                <label for="phone" class="required">Phone Number</label>
                                 <input type="tel" id="phone" name="phone" class="form-control" pattern="[0-9]{10}" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>" required>
                             </div>
                         </div>
@@ -330,7 +333,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="specialization">Specialization*</label>
+                                <label for="specialization" class="required">Specialization</label>
                                 <select id="specialization" name="specialization" class="form-control" required>
                                     <option value="">Select Specialization</option>
                                     <option value="Cardiology" <?php echo (isset($_POST['specialization']) && $_POST['specialization'] == 'Cardiology') ? 'selected' : ''; ?>>Cardiology</option>
@@ -346,14 +349,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                             
                             <div class="form-group">
-                                <label for="qualification">Qualification*</label>
-                                <input type="text" id="qualification" name="qualification" class="form-control" placeholder="MBBS, MD, etc." value="<?php echo isset($_POST['qualification']) ? htmlspecialchars($_POST['qualification']) : ''; ?>" required>
+                                <label for="qualification" class="required">Qualification</label>
+                                <input type="text" id="qualification" name="qualification" class="form-control" placeholder="MBBS, MD, MS, etc." value="<?php echo isset($_POST['qualification']) ? htmlspecialchars($_POST['qualification']) : ''; ?>" required>
                             </div>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="licenseNumber">Medical License Number*</label>
+                                <label for="licenseNumber" class="required">Medical License Number</label>
                                 <input type="text" id="licenseNumber" name="licenseNumber" class="form-control" value="<?php echo isset($_POST['licenseNumber']) ? htmlspecialchars($_POST['licenseNumber']) : ''; ?>" required>
                             </div>
                             
@@ -375,13 +378,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="password">Create Password*</label>
+                                <label for="password" class="required">Create Password</label>
                                 <input type="password" id="password" name="password" class="form-control" required>
                                 <small class="text-muted">Minimum 8 characters with 1 uppercase, 1 lowercase, and 1 number</small>
                             </div>
                             
                             <div class="form-group">
-                                <label for="confirmPassword">Confirm Password*</label>
+                                <label for="confirmPassword" class="required">Confirm Password</label>
                                 <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
                             </div>
                         </div>
@@ -393,6 +396,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <div class="login-link">
                         <p>Already have an account? <a href="login.php">Login here</a></p>
+                        <p>Are you a patient? <a href="register.php">Register as Patient</a></p>
                     </div>
                 </form>
             </div>
